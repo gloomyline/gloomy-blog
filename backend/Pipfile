@@ -9,6 +9,9 @@ flask-sqlalchemy = "*"
 python-dotenv = "*"
 authlib = "*"
 faker = "*"
+captcha = "*"
+flask-cache = "*"
+flask-redis = "*"
 
 [dev-packages]
 watchdog = "*"

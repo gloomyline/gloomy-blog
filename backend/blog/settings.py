@@ -10,6 +10,8 @@ import os
 import sys
 import secrets
 
+from blog.schemas.common import BaseResponse
+
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 WIN = sys.platform.startswith('win')
@@ -21,6 +23,37 @@ else:
 
 class BaseConfig():
     SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(16))
+
+
+    '''
+    link: https://apiflask.com/schema/#base-response-schema-customization
+    Insert the output data into a data field and add some meta fields by
+    passing the customized base response schema to it
+    '''
+    BASE_RESPONSE_SCHEMA = BaseResponse
+    '''
+    The default data key is "data", you can change it to match your data 
+    field name in your schema via the configuration variable BASE_RESPONSE_DATA_KEY:
+    '''
+    BASE_RESPONSE_DATA_KEY = 'data'
+
+
+    CACHE_TYPE = 'redis'
+
+    IMAGE_CAPTCHA_OPTS = {
+        'size': (280, 90),
+        'character_offset_dx': (0, 4),
+        'character_offset_dy': (0, 6),
+        'character_rotate': (-40, 40),
+        'word_space_probability': 0.5,
+        'word_offset_dx': 0.25
+    }
+    CAPTCHA_PATH = os.path.join(basedir, 'temp/captcha')
+    CAPTCHA_EXPIRED_TIME = 5 * 60
+    CAPTCHA_REDIS_PREFIX = 'blog_captcha'
+
+    AUTH_TOKEN_EXPIRED_TIME = 24 * 60 * 60
+
 
     TAGS = [
         {'name': 'Main', 'description': 'The description of the **Main** tag.'},
@@ -37,6 +70,7 @@ class BaseConfig():
     }
     INFO = {
         'title': 'BlogApi',
+        'version': '1.0.0',
         'description': 'The apis of my blog.',
         'contact': {
             'name': 'AlanWang',
@@ -48,10 +82,21 @@ class BaseConfig():
             'url': 'https://mit-license.org/'
         }
     }
+    '''
+    View the spec from your browser via /openapi.json, the indentation will set to 2
+    which is the default value to the config `LOCAL_SPEC_JSON_INDENT`(i.e.,2).
+    When use the flask spec command, change the indentation with the `--indent` or `-i` option
+    '''
+    JSONIFY_PRETTYPRINT_REGULAR = True
+    # enable the local spec file to be syncronized with the project code
+    SYNC_CONFIG_SEPC = True
+    LOCAL_SPEC_PATH = os.path.join(basedir, 'openapi.json')
 
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')
+    REDIS_URL = 'redis://localhost:6379'
+
 
 
 class TestingConfig(BaseConfig):

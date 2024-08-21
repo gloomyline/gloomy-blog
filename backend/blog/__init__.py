@@ -11,7 +11,7 @@ import click
 
 from apiflask import APIFlask
 
-from blog.extensions import db
+from blog.extensions import db, redis_client
 from blog.settings import config
 from blog.blueprints.main import main_bp
 from blog.blueprints.auth import auth_bp
@@ -34,6 +34,7 @@ def create_app(config_name=None):
 
 def register_extensions(app):
     db.init_app(app)
+    redis_client.init_app(app)
 
 
 def register_blueprints(app):

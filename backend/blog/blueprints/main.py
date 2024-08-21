@@ -43,7 +43,7 @@ def get_pet(pet_id):
     """
     if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
         abort(404)
-    return pets[pet_id]
+    return { 'code': 0, 'data': pets[pet_id], 'message': 'ok' }
 
 
 @main_bp.get('/pets')
@@ -54,7 +54,7 @@ def get_pets():
 
     Get all pets in the database.
     """
-    return pets
+    return { 'code': 0, 'data': pets, 'message': 'ok' }
 
 
 @main_bp.post('/pets')

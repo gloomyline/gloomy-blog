@@ -11,6 +11,12 @@ from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
 
+class UserInfo(Schema):
+    id = Integer()
+    name = String()
+    username = String()
+
+
 class PetIn(Schema):
     name = String(
         required=True,

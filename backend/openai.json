@@ -1,0 +1,619 @@
+{
+    "components": {
+        "schemas": {
+            "HTTPError": {
+                "properties": {
+                    "detail": {
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PetIn": {
+                "properties": {
+                    "category": {
+                        "description": "The category of the pet.",
+                        "enum": [
+                            "dog",
+                            "cat"
+                        ],
+                        "title": "Pet Category",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the pet.",
+                        "maxLength": 10,
+                        "minLength": 1,
+                        "title": "Pet Name",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "category",
+                    "name"
+                ],
+                "type": "object"
+            },
+            "PetInUpdate": {
+                "properties": {
+                    "category": {
+                        "description": "The category of the pet.",
+                        "enum": [
+                            "dog",
+                            "cat"
+                        ],
+                        "title": "Pet Category",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the pet.",
+                        "maxLength": 10,
+                        "minLength": 1,
+                        "title": "Pet Name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PetOut": {
+                "properties": {
+                    "category": {
+                        "description": "The category of the pet.",
+                        "title": "Pet Category",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "The ID of the pet.",
+                        "title": "Pet ID",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "The name of the pet.",
+                        "title": "Pet Name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Token": {
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "detail": {
+                        "properties": {
+                            "<location>": {
+                                "properties": {
+                                    "<field_name>": {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "scheme": "bearer",
+                "type": "http"
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "Powered by ==APIFlask== Find more info here.",
+        "url": "https://apiflask.com/docs"
+    },
+    "info": {
+        "contact": {
+            "email": "1211071880@qq.com",
+            "name": "AlanWang",
+            "url": "https://github.com/gloomyline"
+        },
+        "description": "The apis of my blog.",
+        "license": {
+            "name": "MIT",
+            "url": "https://mit-license.org/"
+        },
+        "title": "BlogApi",
+        "version": "1.0.0"
+    },
+    "openapi": "3.0.3",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "It will always return a greeting like this:\n```\n{'message': 'Hello!'}\n```",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {},
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Successful response"
+                    }
+                },
+                "summary": "Just Say Hello",
+                "tags": [
+                    "Main"
+                ]
+            }
+        },
+        "/auth/name/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {},
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Successful response"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HTTPError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Authentication error"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HTTPError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Get Secret",
+                "tags": [
+                    "TokenAuth"
+                ]
+            }
+        },
+        "/auth/token/{id}": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Token"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "\u7528\u6237{id}\u7684\u767b\u5f55\u51ed\u8bc1token"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HTTPError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Not found"
+                    }
+                },
+                "summary": "Get Token",
+                "tags": [
+                    "TokenAuth"
+                ]
+            }
+        },
+        "/pets": {
+            "get": {
+                "description": "Get all pets in the database.",
+                "operationId": "getPets",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/PetOut"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "A list of pets."
+                    }
+                },
+                "summary": "Get All Pet",
+                "tags": [
+                    "Main"
+                ]
+            },
+            "patch": {
+                "description": "Update a pet with given data, the valid fields are `name` and `category`.",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PetInUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PetOut"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "The updated pet."
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ValidationError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Validation error"
+                    }
+                },
+                "summary": "Update a Pet",
+                "tags": [
+                    "Main"
+                ]
+            },
+            "post": {
+                "description": "Create a pet with given data. The created pet will be returned.",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PetIn"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PetOut"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "The pet you just created",
+                        "links": {
+                            "getPetById": {
+                                "operationId": "getPet",
+                                "parameters": {
+                                    "pet_id": "$response.body#/id"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ValidationError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Validation error"
+                    }
+                },
+                "summary": "Create a Pet",
+                "tags": [
+                    "Main"
+                ]
+            }
+        },
+        "/pets/{pet_id}": {
+            "delete": {
+                "description": "Delete a pet with specific ID. The deleted pet will be renamed to `\"Ghost\"`.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pet_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful response"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HTTPError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Not found"
+                    }
+                },
+                "summary": "Delete a Pet",
+                "tags": [
+                    "Main"
+                ]
+            },
+            "get": {
+                "description": "Get a pet with specific ID.",
+                "operationId": "getPet",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pet_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PetOut"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "The pet with given ID."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/HTTPError"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Not found"
+                    }
+                },
+                "summary": "Get a Pet",
+                "tags": [
+                    "Main"
+                ]
+            }
+        }
+    },
+    "servers": [
+        {
+            "name": "Development Server",
+            "url": "http://localhost:5000"
+        },
+        {
+            "name": "Production server",
+            "url": "http://api.blog.com"
+        },
+        {
+            "name": "Testing Server",
+            "url": "http://test.example.com"
+        }
+    ],
+    "tags": [
+        {
+            "description": "The description of the **Main** tag.",
+            "name": "Main"
+        },
+        {
+            "description": "The description of the **TokenAuth** tag.",
+            "name": "TokenAuth"
+        }
+    ]
+}

@@ -6,6 +6,8 @@
 @Author  :   Alan
 @Desc    :   None
 '''
+import time
+
 from flask import current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 from authlib.jose import jwt
@@ -26,8 +28,9 @@ class User(db.Model):
     def validate_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
 
-    @property
     def get_token(self) -> str:
-        header = {'alg': 'HS256'}
-        payload = {'id': self.id}
-        return jwt.encode(header, payload, current_app.config['SECRET_KEY']).decode()
+        now = int(time.time())
+        exp = now + current_app.config['AUTH_TOKEN_EXPIRED_TIME']
+        header = {'alg': 'HS256', 'type': 'JWT'}
+        payload = {'id': self.id, 'exp': exp}
+        return jwt.encode(header, payload, current_app.config['SECRET_KEY']).decode(), exp
