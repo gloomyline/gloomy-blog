@@ -27,6 +27,7 @@ def create_app(config_name=None):
 
     register_extensions(app)
     register_blueprints(app)
+    register_error_handler(app)
     register_commands(app)
 
     return app
@@ -40,6 +41,16 @@ def register_extensions(app):
 def register_blueprints(app):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+
+
+def register_error_handler(app):
+    @app.error_processor
+    def error_handler(error):
+        return {
+            'code': error.status_code,
+            'message': error.message,
+            'detail': error.detail
+        }, error.status_code, error.headers
 
 
 def register_commands(app):

@@ -6,13 +6,15 @@
 @Author  :   Alan
 @Desc    :   None
 '''
-from apiflask import APIBlueprint, abort
+from apiflask import APIBlueprint, HTTPError
 
 from blog.extensions import db
 from blog.models.user import User
 from blog.schemas.main import UserInfo
 from blog.schemas.auth import Captcha, Login, LoginInfo
-from blog.utils import auth, generate_captcha, get_auth_token, verify_captcha
+from blog.errors import TokenInvalidError
+from blog.utils import auth, generate_captcha, get_auth_token, verify_captcha, \
+    f_success_response, f_fail_response
 
 
 auth_bp = APIBlueprint('auth', __name__, tag='TokenAuth', url_prefix='/auth')
@@ -33,7 +35,7 @@ def get_captcha():
         'captcha_key': captcha_key,
         'captcha': captcha_path
     }
-    return {'code': 0, 'data': data, 'message': 'ok'}
+    return f_success_response(data)
 
 
 @auth_bp.post('/login')
@@ -49,16 +51,26 @@ def login(json_data):
     password = json_data['password']
     captcha = json_data['captcha']
     captcha_key = json_data['captcha_key']
-    data = {'userinfo': '', 'token': ''}
     if not verify_captcha(captcha_key, captcha):
-        return {'code': 1, 'data': data, 'message': '验证码不正确或已过期'}
+        return f_fail_response(message='验证码不正确或已过期')
 
     user = db.first_or_404(db.select(User).filter_by(username=username))
     if not user.validate_password(password):
-        return {'code': 1, 'data': data, 'message': '密码错误或账号不存在'}
+        return f_fail_response(message='密码错误或账号不存在')
 
     data = {'userinfo': user, 'token': get_auth_token(user)}
-    return {'code': 0, 'data': data, 'message': 'ok'}
+    return f_success_response(data)
+
+
+@auth_bp.post('/logout')
+@auth_bp.auth_required(auth)
+@auth_bp.doc(tags=['TokenAuth'])
+def logout():
+    '''退出登录
+
+    需要客户端自行维护token,清除token
+    '''
+    return f_success_response(message='退出登录成功')
 
 
 @auth_bp.get('/name/<int:id>')
@@ -73,4 +85,4 @@ def get_user_info(id):
     if auth.current_user.id == id:
         return {'code': 0, 'data': auth.current_user, 'message': 'ok'}
     else:
-        abort(401, message='token未认证', detail='请登录获取token')
+        raise TokenInvalidError()

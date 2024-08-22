@@ -13,13 +13,14 @@ import uuid
 import time
 
 from flask import current_app
-from apiflask import HTTPTokenAuth, abort
+from apiflask import HTTPTokenAuth, HTTPError
 from authlib.jose import jwt, JoseError 
 from authlib.jose.errors import ExpiredTokenError
 from captcha.image import ImageCaptcha
 
 from blog.extensions import db, redis_client
 from blog.models.user import User
+from blog.errors import TokenInvalidError, TokenExpiredError
 
 
 auth = HTTPTokenAuth()
@@ -46,23 +47,10 @@ def verify_token(token: str) -> t.Union[User, None]:
         id = data['id']
         user = db.get_or_404(User, id)
     except ExpiredTokenError:
-        abort(status_code=402, message='token过期了', detail='请重新登录获取')
-    except JoseError:
-        abort(status_code=401, message='token未认证', detail='请登录获取token')
-    except IndexError:
-        return None
+        raise TokenExpiredError
+    except (JoseError, IndexError):
+        raise TokenInvalidError
     return user
-
-
-@auth.error_processor
-def auth_error_processor(error):
-    status_code = error.status_code
-    body = {
-        'code': status_code,
-        'message': error.message,
-        'detail': error.detail
-    }
-    return body, status_code, error.headers
 
 
 def generate_random_numeric_str(long:int=6) -> str:
@@ -109,3 +97,11 @@ def verify_captcha(captcha_image_id: str, answer: str) -> bool:
         os.remove(os.path.join(current_app.config['CAPTCHA_PATH'], f'{captcha_image_id}.png'))
         return True
     return False
+
+
+def f_success_response(data='', code:int=0, message:str='ok'):
+    return {'code':code, 'data':data, 'message': message}
+
+
+def f_fail_response(data='', code:int=1, message:str='failed'):
+    return {'code':code, 'data':data, 'message': message}
