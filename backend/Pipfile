@@ -12,10 +12,13 @@ faker = "*"
 captcha = "*"
 flask-cache = "*"
 flask-redis = "*"
+flake8 = "*"
 
 [dev-packages]
 watchdog = "*"
 faker = "*"
+flake8 = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.13"
