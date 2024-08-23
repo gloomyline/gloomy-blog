@@ -24,7 +24,6 @@ else:
 class BaseConfig():
     SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(16))
 
-
     '''
     link: https://apiflask.com/schema/#base-response-schema-customization
     Insert the output data into a data field and add some meta fields by
@@ -32,11 +31,10 @@ class BaseConfig():
     '''
     BASE_RESPONSE_SCHEMA = BaseResponse
     '''
-    The default data key is "data", you can change it to match your data 
+    The default data key is "data", you can change it to match your data
     field name in your schema via the configuration variable BASE_RESPONSE_DATA_KEY:
     '''
     BASE_RESPONSE_DATA_KEY = 'data'
-
 
     CACHE_TYPE = 'redis'
 
@@ -53,7 +51,6 @@ class BaseConfig():
     CAPTCHA_REDIS_PREFIX = 'blog_captcha'
 
     AUTH_TOKEN_EXPIRED_TIME = 24 * 60 * 60
-
 
     TAGS = [
         {'name': 'TokenAuth', 'description': '登录认证'},
@@ -97,7 +94,6 @@ class BaseConfig():
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')
     REDIS_URL = 'redis://localhost:6379'
-
 
 
 class TestingConfig(BaseConfig):

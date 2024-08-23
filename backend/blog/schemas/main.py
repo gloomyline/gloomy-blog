@@ -26,11 +26,15 @@ class PetIn(Schema):
     category = String(
         required=True,
         validate=OneOf(['dog', 'cat']),
-        metadata={'title': 'Pet Category', 'description': 'The category of the pet.'}
+        metadata={'title': 'Pet Category',
+                  'description': 'The category of the pet.'}
     )
 
 
 class PetOut(Schema):
-    id = Integer(metadata={'title': 'Pet ID', 'description': 'The ID of the pet.'})
-    name = String(metadata={'title': 'Pet Name', 'description': 'The name of the pet.'})
-    category = String(metadata={'title': 'Pet Category', 'description': 'The category of the pet.'})
+    id = Integer(metadata={'title': 'Pet ID',
+                 'description': 'The ID of the pet.'})
+    name = String(metadata={'title': 'Pet Name',
+                  'description': 'The name of the pet.'})
+    category = String(
+        metadata={'title': 'Pet Category', 'description': 'The category of the pet.'})

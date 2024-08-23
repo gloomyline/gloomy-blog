@@ -43,7 +43,7 @@ def get_pet(pet_id):
     """
     if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
         abort(404)
-    return { 'code': 0, 'data': pets[pet_id], 'message': 'ok' }
+    return {'code': 0, 'data': pets[pet_id], 'message': 'ok'}
 
 
 @main_bp.get('/pets')
@@ -54,7 +54,7 @@ def get_pets():
 
     Get all pets in the database.
     """
-    return { 'code': 0, 'data': pets, 'message': 'ok' }
+    return {'code': 0, 'data': pets, 'message': 'ok'}
 
 
 @main_bp.post('/pets')
@@ -63,7 +63,8 @@ def get_pets():
     PetOut,
     status_code=201,
     description='The pet you just created',
-    links={'getPetById': {'operationId': 'getPet', 'parameters': {'pet_id': '$response.body#/id'}}}
+    links={'getPetById': {'operationId': 'getPet',
+                          'parameters': {'pet_id': '$response.body#/id'}}}
 )
 @main_bp.doc(tags=['Main'])
 def create_pet(json_data):

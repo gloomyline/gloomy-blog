@@ -20,7 +20,8 @@ fake = Faker()
 
 
 def fake_admin():
-    role_admin = db.session.execute(db.select(Role).filter_by(name='Admin')).scalar()
+    role_admin = db.session.execute(
+        db.select(Role).filter_by(name='Admin')).scalar()
     admin = User(
         name='AlanWang',
         username='gloomyline',
@@ -47,9 +48,9 @@ def fake_user(count=10):
 
 def fake_category(count=10):
     for i in range(count):
-        category=Category(
+        category = Category(
             name=fake.word(),
-            timestamp = fake.date_time_this_year()
+            timestamp=fake.date_time_this_year()
         )
         db.session.add(category)
         try:
@@ -77,7 +78,8 @@ def fake_post(count=10):
             title=fake.sentence(),
             sub_title=fake.sentence(),
             body=fake.text(1000),
-            category=Category.query.get(random.randint(1, Category.query.count())),
+            category=Category.query.get(
+                random.randint(1, Category.query.count())),
             timestamp=fake.date_time_this_year()
         )
 

@@ -61,7 +61,8 @@ def register_commands(app):
         """Initialize the database."""
         if drop:
             click.confirm(
-                click.style('This operation will delete the database, stll continue?', fg='bright_red'),
+                click.style(
+                    'This operation will delete the database, stll continue?', fg='bright_red'),
                 abort=True
             )
             db.drop_all()
@@ -75,10 +76,10 @@ def register_commands(app):
         db.create_all()
         click.secho('Initialized database.', fg='bright_green')
         Role.init_role()
-        click.secho('Intializing the roles and permissions...', fg='bright_blue')
+        click.secho('Intializing the roles and permissions...',
+                    fg='bright_blue')
         from blog.fakes import fake_admin
         fake_admin()
-
 
     @app.cli.command()
     @click.option('--user', default=10, help='Quantity of users, default is 10.')
@@ -91,16 +92,17 @@ def register_commands(app):
         db.create_all()
 
         Role.init_role()
-        click.secho('Intializing the roles and permissions...', fg='bright_blue')
+        click.secho('Intializing the roles and permissions...',
+                    fg='bright_blue')
         from blog.fakes import fake_admin, fake_user, fake_category, \
             fake_tag, fake_post
         fake_admin()
         click.secho('Generating admin', fg='red')
         fake_user(user)
-        click.secho('Generating %d users...' % user, fg='blue')   
+        click.secho('Generating %d users...' % user, fg='blue')
         fake_category(cate)
-        click.secho('Generating %d cates...' % cate, fg='blue')   
+        click.secho('Generating %d cates...' % cate, fg='blue')
         fake_tag(tag)
-        click.secho('Generating %d tags...' % tag, fg='blue')   
+        click.secho('Generating %d tags...' % tag, fg='blue')
         fake_post(post)
-        click.secho('Generating %d posts...' % post, fg='blue')   
+        click.secho('Generating %d posts...' % post, fg='blue')

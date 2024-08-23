@@ -6,7 +6,7 @@
 @Author  :   Alan
 @Desc    :   None
 '''
-from apiflask import APIBlueprint, HTTPError
+from apiflask import APIBlueprint
 
 from blog.extensions import db
 from blog.models.user import User

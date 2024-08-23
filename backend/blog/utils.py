@@ -13,8 +13,8 @@ import uuid
 import time
 
 from flask import current_app
-from apiflask import HTTPTokenAuth, HTTPError
-from authlib.jose import jwt, JoseError 
+from apiflask import HTTPTokenAuth
+from authlib.jose import jwt, JoseError
 from authlib.jose.errors import ExpiredTokenError
 from captcha.image import ImageCaptcha
 
@@ -53,7 +53,7 @@ def verify_token(token: str) -> t.Union[User, None]:
     return user
 
 
-def generate_random_numeric_str(long:int=6) -> str:
+def generate_random_numeric_str(long: int = 6) -> str:
     return ''.join(['%s' % random.randint(0, 9) for _ in range(long)])
 
 
@@ -84,7 +84,8 @@ def generate_captcha():
     r_key = f'{current_app.config['CAPTCHA_REDIS_PREFIX']}_{captcha_image_id}'
     pipeline = redis_client.pipeline()
     pipeline.set(r_key, captcha_text)
-    pipeline.expireat(r_key, int(time.time()) + current_app.config['CAPTCHA_EXPIRED_TIME'])
+    pipeline.expireat(r_key, int(time.time()) +
+                      current_app.config['CAPTCHA_EXPIRED_TIME'])
     pipeline.execute()
     return captcha_image_id, captcha_image_url
 
@@ -94,14 +95,15 @@ def verify_captcha(captcha_image_id: str, answer: str) -> bool:
     data = redis_client.get(r_key)
     if data and data == answer:
         redis_client.delete(r_key)
-        os.remove(os.path.join(current_app.config['CAPTCHA_PATH'], f'{captcha_image_id}.png'))
+        os.remove(os.path.join(
+            current_app.config['CAPTCHA_PATH'], f'{captcha_image_id}.png'))
         return True
     return False
 
 
-def f_success_response(data='', code:int=0, message:str='ok'):
-    return {'code':code, 'data':data, 'message': message}
+def f_success_response(data='', code: int = 0, message: str = 'ok'):
+    return {'code': code, 'data': data, 'message': message}
 
 
-def f_fail_response(data='', code:int=1, message:str='failed'):
-    return {'code':code, 'data':data, 'message': message}
+def f_fail_response(data='', code: int = 1, message: str = 'failed'):
+    return {'code': code, 'data': data, 'message': message}

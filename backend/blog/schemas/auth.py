@@ -33,7 +33,7 @@ class Login(Schema):
         required=True,
         validate=Length(6),
         description='图形验证码'
-    )    
+    )
     captcha_key = String(
         required=True,
         description='图形验证码key'
@@ -48,4 +48,3 @@ class Token(Schema):
 class LoginInfo(Schema):
     userinfo = Nested(UserInfo)
     token = Nested(Token)
-
