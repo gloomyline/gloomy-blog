@@ -56,8 +56,9 @@ class BaseConfig():
 
 
     TAGS = [
-        {'name': 'Main', 'description': 'The description of the **Main** tag.'},
-        {'name': 'TokenAuth', 'description': 'The description of the **TokenAuth** tag.'}
+        {'name': 'TokenAuth', 'description': '登录认证'},
+        {'name': 'User', 'description': '用户模块'},
+        {'name': 'Main', 'description': '主要模块'},
     ]
     SERVERS = [
         {'name': 'Development Server', 'url': 'http://localhost:5000'},

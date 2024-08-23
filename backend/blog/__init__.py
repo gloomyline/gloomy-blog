@@ -13,6 +13,7 @@ from apiflask import APIFlask
 
 from blog.extensions import db, redis_client
 from blog.settings import config
+from blog.models.user import Role
 from blog.blueprints.main import main_bp
 from blog.blueprints.auth import auth_bp
 
@@ -69,13 +70,37 @@ def register_commands(app):
             click.secho('Initialized database.', fg='bright_green')
 
     @app.cli.command()
+    def init():
+        """Initialize blog."""
+        db.create_all()
+        click.secho('Initialized database.', fg='bright_green')
+        Role.init_role()
+        click.secho('Intializing the roles and permissions...', fg='bright_blue')
+        from blog.fakes import fake_admin
+        fake_admin()
+
+
+    @app.cli.command()
     @click.option('--user', default=10, help='Quantity of users, default is 10.')
-    def forge(user):
+    @click.option('--cate', default=10, help='Quantity of categories of post, default is 10.')
+    @click.option('--tag', default=10, help='Quantity of tags of post, default is 10.')
+    @click.option('--post', default=10, help='Quantity of posts, default is 10.')
+    def forge(user, cate, tag, post):
         """Generate fake data."""
-        from blog.fakes import fake_user
-    
         db.drop_all()
         db.create_all()
 
-        click.secho('Generating %d users...' % user, fg='blue')
+        Role.init_role()
+        click.secho('Intializing the roles and permissions...', fg='bright_blue')
+        from blog.fakes import fake_admin, fake_user, fake_category, \
+            fake_tag, fake_post
+        fake_admin()
+        click.secho('Generating admin', fg='red')
         fake_user(user)
+        click.secho('Generating %d users...' % user, fg='blue')   
+        fake_category(cate)
+        click.secho('Generating %d cates...' % cate, fg='blue')   
+        fake_tag(tag)
+        click.secho('Generating %d tags...' % tag, fg='blue')   
+        fake_post(post)
+        click.secho('Generating %d posts...' % post, fg='blue')   

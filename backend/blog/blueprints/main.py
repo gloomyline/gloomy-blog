@@ -6,8 +6,11 @@
 @Author  :   Alan
 @Desc    :   None
 '''
+import os
+from flask import send_file
 from apiflask import APIBlueprint, abort
 
+from blog.settings import basedir
 from blog.schemas.main import PetIn, PetOut
 
 
@@ -23,14 +26,11 @@ pets = [
 @main_bp.route('/')
 @main_bp.doc(tags=['Main'])
 def index():
-    """Just Say Hello
+    """Openapi
 
-    It will always return a greeting like this:
-    ```
-    {'message': 'Hello!'}
-    ```
+    返回 `Openapijson` file
     """
-    return {'message': 'hello'}
+    return send_file(os.path.join(basedir, 'openapi.json'))
 
 
 @main_bp.get('/pets/<int:pet_id>')
