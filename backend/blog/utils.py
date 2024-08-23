@@ -11,6 +11,7 @@ import random
 import typing as t
 import uuid
 import time
+from typing import Protocol
 
 from flask import current_app
 from apiflask import HTTPTokenAuth
@@ -36,6 +37,9 @@ def get_auth_token(user):
 
 @auth.verify_token
 def verify_token(token: str) -> t.Union[User, None]:
+    # TODO: auth user 1 here, in order to be convenient with developing
+    if os.getenv('FLASK_ENV') == 'development':
+        return db.get_or_404(User, 1)
     try:
         # jwt.decode meth return claims_cls instance(default is JWTClaims)
         data = jwt.decode(
@@ -101,9 +105,29 @@ def verify_captcha(captcha_image_id: str, answer: str) -> bool:
     return False
 
 
-def f_success_response(data='', code: int = 0, message: str = 'ok'):
+def f_success_response(data: t.Any = '', code: int = 0, message: str = 'ok'):
     return {'code': code, 'data': data, 'message': message}
 
 
-def f_fail_response(data='', code: int = 1, message: str = 'failed'):
+def f_fail_response(data: t.Any = '', code: int = 1, message: str = 'failed'):
     return {'code': code, 'data': data, 'message': message}
+
+
+class PaginationType(Protocol):
+    page: int
+    per_page: int
+    pages: int
+    total: int
+    next_num: int
+    has_next: bool
+    prev_num: int
+    has_prev: bool
+
+
+def pagination_builder(pagination: PaginationType) -> dict:
+    return {
+        'total': pagination.total,
+        'pages': pagination.pages,
+        'page': pagination.page,
+        'per_page': pagination.per_page
+    }

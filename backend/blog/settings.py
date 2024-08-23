@@ -52,6 +52,8 @@ class BaseConfig():
 
     AUTH_TOKEN_EXPIRED_TIME = 24 * 60 * 60
 
+    USERS_PAGE_SIZE = 10
+
     TAGS = [
         {'name': 'TokenAuth', 'description': '登录认证'},
         {'name': 'User', 'description': '用户模块'},

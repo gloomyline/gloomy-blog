@@ -10,7 +10,7 @@ from apiflask import Schema
 from apiflask.fields import Integer, String, Nested
 from apiflask.validators import Length
 
-from blog.schemas.main import UserInfo
+from blog.schemas.user import UserInfo
 
 
 class Captcha(Schema):

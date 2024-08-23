@@ -6,11 +6,11 @@
 @Author  :   Alan
 @Desc    :   None
 '''
-from apiflask import APIBlueprint
+from apiflask import APIBlueprint, abort
 
 from blog.extensions import db
 from blog.models.user import User
-from blog.schemas.main import UserInfo
+from blog.schemas.user import UserInfo
 from blog.schemas.auth import Captcha, Login, LoginInfo
 from blog.errors import TokenInvalidError
 from blog.utils import auth, generate_captcha, get_auth_token, verify_captcha, \
@@ -73,16 +73,13 @@ def logout():
     return f_success_response(message='退出登录成功')
 
 
-@auth_bp.get('/name/<int:id>')
+@auth_bp.get('/userinfo')
 @auth_bp.auth_required(auth)
 @auth_bp.output(UserInfo, description='用户信息')
 @auth_bp.doc(tags=['TokenAuth'])
-def get_user_info(id):
-    '''获取用户信息
+def get_user_info():
+    '''获取当前用户信息
 
-    根据用户id获取用户信息
+    获取当前认证用户信息
     '''
-    if auth.current_user.id == id:
-        return {'code': 0, 'data': auth.current_user, 'message': 'ok'}
-    else:
-        raise TokenInvalidError()
+    return f_success_response(auth.current_user)

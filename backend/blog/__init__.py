@@ -16,6 +16,7 @@ from blog.settings import config
 from blog.models.user import Role
 from blog.blueprints.main import main_bp
 from blog.blueprints.auth import auth_bp
+from blog.blueprints.user import user_bp
 
 
 def create_app(config_name=None):
@@ -40,8 +41,9 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(user_bp)
+    app.register_blueprint(main_bp)
 
 
 def register_error_handler(app):
