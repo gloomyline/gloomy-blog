@@ -67,6 +67,6 @@ class Comment(db.Model):
 
     post = db.relationship('Post', back_populates='comments')
     replies = db.relationship('Comment',
-                              back_ref=db.backref('replied', remote_side=[id]), cascade=['all', 'delete-orphan'])
+                              backref=db.backref('replied', remote_side=[id]), cascade=['all', 'delete-orphan'])
 
     
