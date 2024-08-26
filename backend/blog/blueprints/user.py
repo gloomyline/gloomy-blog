@@ -11,8 +11,9 @@ from flask.views import MethodView
 
 from blog.extensions import db
 from blog.models import User
-from blog.schemas.user import UserEditIn, UserInfo, UserList, UserQuery
-from blog.utils import auth, f_success_response, pagination_builder
+from blog.schemas.user import UserCreateIn, UserEditIn, UserInfo, UserList, UserQuery
+from blog.utils import auth, f_success_response, f_fail_response, pagination_builder
+from blog.decorators import admin_required
 
 
 user_bp = APIBlueprint('user', __name__)
@@ -71,8 +72,34 @@ class UsersController(MethodView):
         users = pagination.items
         return f_success_response({'items': users, 'pagination': pagination_builder(pagination)})
 
-    def post(self):
-        pass
+    @admin_required
+    @user_bp.input(UserCreateIn, location='json')
+    @user_bp.output(UserInfo)
+    def post(self, json_data):
+        '''创建用户
+
+        **Admin**创建新用户
+        '''
+        username = json_data['username']
+        name = json_data['name']
+        role_id = json_data['role_id']
+        user = db.session.execute(
+            db.select(User).filter_by(username=username)
+        ).scalar_one_or_none()
+        if user is not None:
+            return f_fail_response(message='用户名已存在')
+
+        user = db.session.execute(
+            db.select(User).filter_by(name=name)
+        ).scalar_one_or_none()
+        if user is not None:
+            return f_fail_response(message='姓名已存在')
+
+        user = User(username=username, name=name, role_id=role_id)
+        user.set_password(json_data['password'])
+        db.session.add(user)
+        db.session.commit()
+        return f_success_response(user)
 
 
 user_bp.add_url_rule(

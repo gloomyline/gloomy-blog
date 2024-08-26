@@ -6,11 +6,15 @@
 @Author  :   Alan
 @Desc    :   None
 '''
+import os
 from apiflask import Schema, PaginationSchema
 from apiflask.fields import Integer, String, Nested, List
 from apiflask.validators import Length
 
-from blog.settings import BaseConfig
+from blog.settings import config
+
+
+env = os.getenv('FLASK_ENV', 'development')
 
 
 class RoleInfo(Schema):
@@ -57,7 +61,7 @@ class UserCreateIn(Schema):
 class UserQuery(Schema):
     page = Integer(load_default=1, description='页码')
     per_page = Integer(
-        load_default=BaseConfig.USERS_PAGE_SIZE,
+        load_default=config[env].USERS_PAGE_SIZE,
         description='用户列表页长'
     )
 

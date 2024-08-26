@@ -92,6 +92,8 @@ class BaseConfig():
     SYNC_CONFIG_SEPC = True
     LOCAL_SPEC_PATH = os.path.join(basedir, 'openapi.json')
 
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')

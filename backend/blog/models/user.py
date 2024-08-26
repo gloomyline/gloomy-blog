@@ -7,6 +7,7 @@
 @Desc    :   None
 '''
 import time
+import json
 
 from flask import current_app
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -26,7 +27,8 @@ class Permission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
 
-    roles = db.relationship('Role', secondary=role_permission, back_populates='permissions')
+    roles = db.relationship(
+        'Role', secondary=role_permission, back_populates='permissions')
 
 
 class Role(db.Model):
@@ -34,7 +36,8 @@ class Role(db.Model):
     name = db.Column(db.String(20), unique=True)
 
     users = db.relationship('User', back_populates='role')
-    permissions = db.relationship('Permission', secondary=role_permission, back_populates='roles')
+    permissions = db.relationship(
+        'Permission', secondary=role_permission, back_populates='roles')
 
     def __repr__(self):
         return '%s_%d: %s' % (__class__.name, self.id, self.name)
@@ -46,13 +49,15 @@ class Role(db.Model):
             'User': ['COMMENT'],
         }
         for role_name in roles_permissions_map:
-            role = db.session.execute(db.select(Role).filter_by(name=role_name)).scalar()
+            role = db.session.execute(
+                db.select(Role).filter_by(name=role_name)).scalar()
             if role is None:
                 role = Role(name=role_name)
                 db.session.add(role)
                 role.permissions = []
                 for permission_name in roles_permissions_map[role_name]:
-                    permission = db.session.execute(db.select(Permission).filter_by(name=permission_name)).scalar()
+                    permission = db.session.execute(
+                        db.select(Permission).filter_by(name=permission_name)).scalar()
                     if permission is None:
                         permission = Permission(name=permission_name)
                         db.session.add(permission)
@@ -62,12 +67,15 @@ class Role(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), unique=True)
+    name = db.Column(db.String(30))
     username = db.Column(db.String(30), unique=True)
     password_hash = db.Column(db.String(255))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
     role = db.relationship('Role', back_populates='users')
+
+    def __repr__(self) -> str:
+        return f'<User.{self.id}: {self.name}>'
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -84,3 +92,10 @@ class User(db.Model):
 
     def is_admin(self):
         return self.role.name == 'Admin'
+
+    def can(self, permission_name):
+        permission = db.session.execute(
+            db.select(Permission).filter_by(name=permission_name)
+        ).scalar()
+        return permission is not None and self.role is not None \
+            and permission in self.role.permissions
