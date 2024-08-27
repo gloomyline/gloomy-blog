@@ -12,11 +12,11 @@ from apiflask.fields import Integer, String, Field
 
 
 class BaseResponse(Schema):
-    code = Integer(description='自定义响应代码')
-    data = Field(description='请求响应数据')
-    message = String(description='请求响应简讯')
+    code = Integer(metadata={'description': '自定义响应代码'})
+    data = Field(metadata={'description': '请求响应数据'})
+    message = String(metadata={'description': '请求响应简讯'})
 
 
 class PaginationQuery(Schema):
-    page = Integer(description='页码')
-    per_page = Integer(description='页长')
+    page = Integer(metadata={'description': '页码'})
+    per_page = Integer(metadata={'description': '页长'})

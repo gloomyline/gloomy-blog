@@ -101,7 +101,11 @@ class DevelopmentConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
-    pass
+    TESTING = True
+
+    # in memory database
+    SQLALCHEMY_DATABASE_URI = prefix
+    REDIS_URL = 'redis://localhost:6379'
 
 
 class ProductionConfig(BaseConfig):

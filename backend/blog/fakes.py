@@ -78,13 +78,18 @@ def fake_post(count=10):
             title=fake.sentence(),
             sub_title=fake.sentence(),
             body=fake.text(1000),
-            category=Category.query.get(
-                random.randint(1, Category.query.count())),
+            category=db.session.get(
+                Category,
+                random.randint(1, db.session.query(Category).count()),
+            ),
             timestamp=fake.date_time_this_year()
         )
 
         for j in range(random.randint(1, 5)):
-            tag = Tag.query.get(random.randint(1, Tag.query.count()))
+            tag = db.session.get(
+                Tag,
+                random.randint(1, db.session.query(Tag).count())
+            )
             if tag not in post.tags:
                 post.tags.append(tag)
 

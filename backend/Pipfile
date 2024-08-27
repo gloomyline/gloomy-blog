@@ -12,6 +12,7 @@ faker = "*"
 captcha = "*"
 flask-cache = "*"
 flask-redis = "*"
+pytest = "*"
 
 [dev-packages]
 watchdog = "*"

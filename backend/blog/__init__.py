@@ -69,8 +69,8 @@ def register_commands(app):
             )
             db.drop_all()
             click.echo(click.style('Drop tables.', fg='blue'))
-            db.create_all()
-            click.secho('Initialized database.', fg='bright_green')
+        db.create_all()
+        click.secho('Initialized database.', fg='bright_green')
 
     @app.cli.command()
     def init():
@@ -82,6 +82,7 @@ def register_commands(app):
                     fg='bright_blue')
         from blog.fakes import fake_admin
         fake_admin()
+        click.secho('Done.', fg='bright_blue')
 
     @app.cli.command()
     @click.option('--user', default=10, help='Quantity of users, default is 10.')
@@ -108,3 +109,4 @@ def register_commands(app):
         click.secho('Generating %d tags...' % tag, fg='blue')
         fake_post(post)
         click.secho('Generating %d posts...' % post, fg='blue')
+        click.secho('Done.', fg='bright_green')
