@@ -73,11 +73,11 @@ def runner(app):
 
 @pytest.fixture
 def login(request, client):
-    param = request.param
-    if param is None:
+    if not hasattr(request, 'param') or request.param is None:
         username = 'adminuser'
         password = '123456'
     else:
+        param = request.param
         username = param['username']
         password = param['password']
 

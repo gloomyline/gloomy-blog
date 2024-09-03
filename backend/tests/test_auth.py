@@ -8,7 +8,7 @@
 '''
 import pytest
 import time
-from flask import current_app
+from flask import current_app, url_for
 
 
 def test_get_captcha(client):
@@ -40,9 +40,25 @@ def test_login(login):
         current_app.config['AUTH_TOKEN_EXPIRED_TIME'] >= expired_at
 
 
-def test_logout():
-    pass
+def test_logout(client, login):
+    result = login.get_json()
+    token = result['data']['token']['token_str']
+    response = client.post(url_for('auth.logout'), headers={
+                           'Authorization': f'Bearer {token}'})
+    assert response.status_code == 200
+    assert '退出登录成功' in response.get_json()['message']
 
 
-def test_get_userinfo(login):
-    pass
+def test_get_userinfo(client, login):
+    response = client.get(url_for('auth.get_user_info'))
+    assert response.status_code == 401
+
+    token = login.get_json()['data']['token']['token_str']
+    response = client.get(url_for('auth.get_user_info'), headers={
+                          'Authorization': f'Bearer {token}'})
+    assert response.status_code == 200
+    data = response.get_json()['data']
+    assert data['id'] == 1
+    assert data['username'] == 'adminuser'
+    assert data['name'] == 'Admin User'
+    assert data['role']['id'] == 1
